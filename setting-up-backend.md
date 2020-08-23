@@ -4,6 +4,10 @@ frontend.
 
 The tutorial has been split into two parts- setting up the backend, and setting up the frontend.
 
+**GITHUB REPO:** https://github.com/IgnisDa/django-nuxtjs-authentication.git
+The repo has two branches: part-1 and part-2. Part-1 contains the files for this tutorial, part-2 contains
+the files for this tutorial and the next.
+
 *NOTE:* For the sake of brevity, I will omit all comments 
 explaining the working. However, the code is well commented
 and can be accessed via the github repo. 
@@ -311,5 +315,3 @@ our backend using the `django-corsheaders` package.
 CORS_ORIGIN_WHITELIST = ('http://127.0.0.1:3000',)
 ```
 This is the default development server that Nuxtjs uses. You can configure yours accordingly.
-
-# Setting up the frontend
