@@ -3,6 +3,9 @@ The tutorial has been split into two parts- setting up the backend, and setting 
 The repo has two branches: `part-1` and `part-2`. `part-1` contains the files for this tutorial, `part-2` contains
 the files for this tutorial and the next.
 
+Tutorial Part 2: [Here](https://dev.to/ignisda/setting-up-user-authentication-with-nuxtjs-and-django-rest-framework-part-2-4a6e-temp-slug-7247513?preview=f312affddd901ef65a7b7e79c86ed69d93b47a4c3786097a3ce8bd30c6bcce0c049e720674f1e9d8821f3fd0575555d87adb44588940767d0b11e58f)
+
+
 **GITHUB REPO:** https://github.com/IgnisDa/django-nuxtjs-authentication
 
 We'll be using Token Authentication using the [djoser](https://www.google.com/url?q=https://djoser.readthedocs.io/en/latest/) package to
@@ -314,3 +317,5 @@ CORS_ORIGIN_WHITELIST = ('http://127.0.0.1:3000',)
 This is the default development server that Nuxtjs uses. You can configure yours accordingly. That's it for this part.
 
 Make sure you checkout the Part-2 to learn how to add authentication to your Nuxtjs frontend.
+
+Tutorial Part 2: [Here](https://dev.to/ignisda/setting-up-user-authentication-with-nuxtjs-and-django-rest-framework-part-2-4a6e-temp-slug-7247513?preview=f312affddd901ef65a7b7e79c86ed69d93b47a4c3786097a3ce8bd30c6bcce0c049e720674f1e9d8821f3fd0575555d87adb44588940767d0b11e58f)
