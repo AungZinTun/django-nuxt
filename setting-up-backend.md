@@ -3,7 +3,7 @@ The tutorial has been split into two parts- setting up the backend, and setting 
 The repo has two branches: `part-1` and `part-2`. `part-1` contains the files for this tutorial, `part-2` contains
 the files for this tutorial and the next.
 
-**GITHUB REPO:** https://github.com/IgnisDa/django-nuxtjs-authentication.git
+**GITHUB REPO:** https://github.com/IgnisDa/django-nuxtjs-authentication
 
 We'll be using Token Authentication using the [djoser](https://www.google.com/url?q=https://djoser.readthedocs.io/en/latest/) package to
 implement an authentication backend API, and consume it with a Nuxtjs frontend.
