@@ -1,19 +1,17 @@
-We'll be using Token Authentication using the [djoser](https://www.google.com/url?q=https://djoser.readthedocs.io/en/latest/) package to
-implement an authentication backend API, and consume it with a Nuxtjs
-frontend.
-
 The tutorial has been split into two parts- setting up the backend, and setting up the frontend.
-
-**GITHUB REPO:** https://github.com/IgnisDa/django-nuxtjs-authentication.git
-The repo has two branches: part-1 and part-2. Part-1 contains the files for this tutorial, part-2 contains
+The repo has two branches: `part-1` and `part-2`. `part-1` contains the files for this tutorial, `part-2` contains
 the files for this tutorial and the next.
+**GITHUB REPO:** https://github.com/IgnisDa/django-nuxtjs-authentication.git
+
+We'll be using Token Authentication using the [djoser](https://www.google.com/url?q=https://djoser.readthedocs.io/en/latest/) package to
+implement an authentication backend API, and consume it with a Nuxtjs frontend.
 
 *NOTE:* For the sake of brevity, I will omit all comments 
 explaining the working. However, the code is well commented
-and can be accessed via the github repo. 
+and can be accessed via the github repository. 
 
 # Prerequisites
-1) Experience with django rest framework
+1) Familiarity with django-rest-framework
 2) Knowledge of nuxt-auth: [this video will be enough](https://m.youtube.com/watch?v=zzUpO8tXoaw)
 
 # Setting up the backend
@@ -25,14 +23,15 @@ Install the following packages in your virtual environment:
 - httpie
 - validate-email
 
-Start by making a common directory `testproject/` where the frontend (nuxtjs) and backend (django rest framework) will live separately in `frontend/` and `backend/` directories respectively. 
+Start by making a common directory `nuxtjs+drf-user-auth/` where the frontend (nuxtjs) and backend (django rest framework) will live separately in
+`frontend/` and `backend/` directories respectively. 
 
-``` bash
+```bash
 mkdir nuxtjs+drf-user-auth && cd nuxtjs+drf-user-auth/
 django-admin startproject backend && cd backend/
 python manage.py startapp accounts
 ```
-Add the new app to `settings.py`.
+Add the new app and addons to `settings.py`.
 
 ```python
 # backend/settings.py
@@ -45,7 +44,6 @@ INSTALLED_APPS = [
 ]
 ```
 
-
 Next, we define a custom user model that will handle user authentication for us. This will allow us to add more fields to the user model than
 what the default `django.contrib.auth.models.User` provides, and also
 use `email` as the default identifier instead of `username`.
@@ -56,7 +54,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from . import managers
+from . import managers # we will write this file shortly
 
 
 class CustomUser(AbstractUser):
@@ -81,7 +79,7 @@ class CustomUser(AbstractUser):
     objects = managers.CustomUserManager()
 
     def __str__(self):
-        return self.email
+        return f"{self.email}'s custom account"
 
 # accounts/managers.py
 from django.contrib.auth.base_user import BaseUserManager
@@ -91,10 +89,6 @@ from validate_email import validate_email
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password, **extra_fields):
-        """
-        Create and save a User with the given email and password.
-        """
-
         if not email:
             raise ValueError(_('The Email must be set'))
         email = self.normalize_email(email)
@@ -197,7 +191,7 @@ class CustomUserRetrieveSerializer(serializers.ModelSerializer):
                   'bio', 'gender', 'birth_date', 'id')
 ```
 
-Then we define the views that will use these serializers, routes and views to deliver the data to the frontend.
+Then we define the views and viewsets that will use these serializers to deliver the data to the frontend.
 
 ```python
 # accounts/views.py
@@ -257,6 +251,7 @@ urlpatterns = [
     path('users/', include(routers.router.urls)),
 ]
 ```
+
 The new urls will expose a few endpoints for the following purposes:
 
 | METHOD     | PATH                   | PURPOSE                                                                                                          |
@@ -283,13 +278,13 @@ $ http POST http://127.0.0.1:8000/accounts/users/ email='email1@email.com' passw
 }
 
 # Login using the new user
-# You can visit `admin/authtoken/token/` to see the new tokens
+# You can visit `admin/authtoken/token/` to see the new token generated
 $ http POST http://127.0.0.1:8000/token/login/ email='email1@email.com' password="test-pass"
 {
     "auth_token": "b1a73afd0431c87b5e0c4afb4b085d401d652edb"
 }
 
-# Access data of the user, using  the token generated.
+# Access data using  the token generated. Make sure you use the correct token that you got in the above step
 $ http GET http://127.0.0.1:8000/accounts/data/ "Authorization: Token faa77d17c965789d4256e531d698b8db77948760"
 {
     "bio": "",
@@ -303,9 +298,9 @@ $ http GET http://127.0.0.1:8000/accounts/data/ "Authorization: Token faa77d17c9
 
 # Logout the user
 $ http POST http://127.0.0.1:8000/token/logout/ 'Authorization: Token faa77d17c965789d4256e531d698b8db77948760'
-# You won't get a response but the token will be deleted from the database. Check
-# this from the admin.
+# You won't get a response but the token will be deleted from the database. Check this from the admin.
 ```
+
 Yay! It all works! Now we only need to add a few settings
 to make sure that our frontend can communicate with
 our backend using the `django-corsheaders` package.
@@ -314,4 +309,6 @@ our backend using the `django-corsheaders` package.
 # backend/settings.py
 CORS_ORIGIN_WHITELIST = ('http://127.0.0.1:3000',)
 ```
-This is the default development server that Nuxtjs uses. You can configure yours accordingly.
+This is the default development server that Nuxtjs uses. You can configure yours accordingly. That's it for this part.
+
+Make sure you checkout the Part-2 to learn how to add authentication to your Nuxtjs frontend.
