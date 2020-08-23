@@ -6,6 +6,11 @@ from . import managers
 
 
 class CustomUser(AbstractUser):
+    """
+    A User model that uses `email` as it's default identifier instead of
+    username.
+    """
+
     username = None
     email = models.EmailField(_('email address'), unique=True)
     bio = models.TextField()

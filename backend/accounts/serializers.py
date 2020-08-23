@@ -5,6 +5,12 @@ CustomUser = get_user_model()
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
+    """
+    We use this serializer for user registration. Most of the fields have
+    `required=False`, but can be configured as needed. This serializer is used
+    in `accounts.viewsets.CustomUserModelViewSet`.
+    """
+
     email = serializers.CharField(
         write_only=True, validators=[validators.UniqueValidator(
             message='This email already exists',
@@ -26,6 +32,10 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
 
 class CustomUserRetrieveSerializer(serializers.ModelSerializer):
+    """
+    We use this serializer to retrieve data of the currently logged in user.
+    It is used in `accounts.views.UserRetrieveUpdateDestroyAPIView`
+    """
     birth_date = serializers.CharField(required=False)
     bio = serializers.CharField(required=False)
     gender = serializers.CharField(required=False)

@@ -17,6 +17,11 @@ class CustomUserModelViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
 
     def perform_create(self, serializer):
+        """
+        When the instance is created, the raw password is saved to the
+        database instead of the hashed one. This method is implemented
+        to correct that.
+        """
         instance = serializer.save()
         instance.set_password(instance.password)
         instance.save()
