@@ -1,0 +1,75 @@
+<template>
+  <div class="login-page">
+    <v-layout flex align-center justify-center>
+      <v-flex xs6 sm6 elevation-6>
+        <v-card>
+          <v-card-title flex align-center justify-center>
+            <h1>Login</h1>
+            <v-card-subtitle v-if="formErrors">
+              {{ formErrors }}
+            </v-card-subtitle>
+            <v-card-subtitle v-if="response">
+              {{ response }}
+            </v-card-subtitle>
+          </v-card-title>
+          <v-card-text class="pt-4">
+            <div>
+              <v-form ref="form">
+                <v-text-field
+                  v-model="userData.email"
+                  label="Enter your e-mail address"
+                  counter
+                  required
+                ></v-text-field>
+                <v-text-field
+                  v-model="userData.password"
+                  label="Enter your password"
+                  :append-icon="form.showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+                  :type="form.showPassword ? 'text' : 'password'"
+                  required
+                  @click:append="form.showPassword = !form.showPassword"
+                ></v-text-field>
+                <v-layout justify-space-between>
+                  <v-btn @click="logInUser(userData)">
+                    Login
+                  </v-btn>
+                  <a href="?">Forgot Password</a>
+                </v-layout>
+              </v-form>
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-flex>
+    </v-layout>
+  </div>
+</template>
+
+<script>
+export default {
+  data: () => ({
+    // loggedIn: false,
+    userData: { email: '', password: '', showPassword: false },
+    response: '',
+    formErrors: '',
+  }),
+  methods: {
+    async logInUser(userData) {
+      if (!this.$refs.form.validate()) {
+        this.formErrors = 'Please correct the errors below'
+        return
+      }
+      this.formErrors = ''
+      try {
+        await this.$auth.loginWith('local', {
+          data: userData,
+        })
+        console.log('notification successful')
+      } catch (error) {
+        console.log('notification unsuccessful')
+      }
+    },
+  },
+}
+</script>
+
+<style scoped></style>

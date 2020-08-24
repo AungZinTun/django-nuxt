@@ -5,22 +5,24 @@ the files for this tutorial and the next.
 
 Tutorial Part 2: [Here](https://dev.to/ignisda/setting-up-user-authentication-with-nuxtjs-and-django-rest-framework-part-2-4a6e-temp-slug-7247513?preview=f312affddd901ef65a7b7e79c86ed69d93b47a4c3786097a3ce8bd30c6bcce0c049e720674f1e9d8821f3fd0575555d87adb44588940767d0b11e58f)
 
-
 **GITHUB REPO:** https://github.com/IgnisDa/django-nuxtjs-authentication
 
 We'll be using Token Authentication using the [djoser](https://www.google.com/url?q=https://djoser.readthedocs.io/en/latest/) package to
 implement an authentication backend API, and consume it with a Nuxtjs frontend.
 
-*NOTE:* For the sake of brevity, I will omit all comments 
+_NOTE:_ For the sake of brevity, I will omit all comments
 explaining the working. However, the code is well commented
-and can be accessed via the github repository. 
+and can be accessed via the github repository.
 
 # Prerequisites
-1) Familiarity with django-rest-framework
-2) Knowledge of nuxt-auth: [this video will be enough](https://m.youtube.com/watch?v=zzUpO8tXoaw)
+
+1. Familiarity with django-rest-framework
+2. Knowledge of nuxt-auth: [this video will be enough](https://m.youtube.com/watch?v=zzUpO8tXoaw)
 
 # Setting up the backend
+
 Install the following packages in your virtual environment:
+
 - django
 - djangorestframework
 - djoser
@@ -29,13 +31,14 @@ Install the following packages in your virtual environment:
 - validate-email
 
 Start by making a common directory `nuxtjs+drf-user-auth/` where the frontend (nuxtjs) and backend (django rest framework) will live separately in
-`frontend/` and `backend/` directories respectively. 
+`frontend/` and `backend/` directories respectively.
 
 ```bash
 mkdir nuxtjs+drf-user-auth && cd nuxtjs+drf-user-auth/
 django-admin startproject backend && cd backend/
 python manage.py startapp accounts
 ```
+
 Add the new app and addons to `settings.py`.
 
 ```python
@@ -45,7 +48,7 @@ INSTALLED_APPS = [
   'rest_framework',
   'rest_framework.authtoken',
   'corsheaders',
-  'accounts.apps.AccountsConfig', 
+  'accounts.apps.AccountsConfig',
 ]
 ```
 
@@ -116,6 +119,7 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 ```
+
 Add the relevant settings in your `settings.py` file.
 
 ```python
@@ -268,7 +272,7 @@ The new urls will expose a few endpoints for the following purposes:
 | POST       | token/login/           | Send a `POST` request with the correct credentials and this will respond with a login token called `auth_token`. |
 | POST       | token/logout/          | Send a `POST` request with the `auth_token` in the header and the corresponding user will be logged out.         |
 
-Let us use `httpie` to check whether 
+Let us use `httpie` to check whether
 our endpoints work.
 
 ```bash
@@ -290,7 +294,7 @@ $ http POST http://127.0.0.1:8000/token/login/ email='email1@email.com' password
 }
 
 # Access data using  the token generated. Make sure you use the correct token that you got in the above step
-$ http GET http://127.0.0.1:8000/accounts/data/ "Authorization: Token faa77d17c965789d4256e531d698b8db77948760"
+$ http GET http://127.0.0.1:8000/accounts/data/ "Authorization: Token b1a73afd0431c87b5e0c4afb4b085d401d652edb"
 {
     "bio": "",
     "birth_date": null,
@@ -302,7 +306,7 @@ $ http GET http://127.0.0.1:8000/accounts/data/ "Authorization: Token faa77d17c9
 }
 
 # Logout the user
-$ http POST http://127.0.0.1:8000/token/logout/ 'Authorization: Token faa77d17c965789d4256e531d698b8db77948760'
+$ http POST http://127.0.0.1:8000/token/logout/ 'Authorization: Token b1a73afd0431c87b5e0c4afb4b085d401d652edb'
 # You won't get a response but the token will be deleted from the database. Check this from the admin.
 ```
 
@@ -314,6 +318,7 @@ our backend using the `django-corsheaders` package.
 # backend/settings.py
 CORS_ORIGIN_WHITELIST = ('http://127.0.0.1:3000',)
 ```
+
 This is the default development server that Nuxtjs uses. You can configure yours accordingly. That's it for this part.
 
 Make sure you checkout the Part-2 to learn how to add authentication to your Nuxtjs frontend.
