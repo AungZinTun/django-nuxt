@@ -50,6 +50,13 @@ INSTALLED_APPS = [
   'corsheaders',
   'accounts.apps.AccountsConfig',
 ]
+
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    # Other stuff
+]
 ```
 
 Next, we define a custom user model that will handle user authentication for us. This will allow us to add more fields to the user model than
@@ -316,7 +323,7 @@ our backend using the `django-corsheaders` package.
 
 ```python
 # backend/settings.py
-CORS_ORIGIN_WHITELIST = ('http://127.0.0.1:3000',)
+CORS_ORIGIN_WHITELIST = ('http://127.0.0.1:3000', 'http://localhost:3000')
 ```
 
 This is the default development server that Nuxtjs uses. You can configure yours accordingly. That's it for this part.

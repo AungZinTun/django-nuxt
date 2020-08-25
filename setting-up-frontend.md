@@ -136,20 +136,15 @@ _register_ buttons using the `v-else` directive.
 Next, let's make pages (routes) for _login_, _logout_, and _register_.
 
 ```HTML
+<!-- pages/login.vue -->
+<!-- This contains the login form. You should also add some custom validation yourself. -->
 <template>
   <div class="login-page">
-
     <v-layout flex align-center justify-center>
       <v-flex xs6 sm6 elevation-6>
         <v-card>
           <v-card-title flex align-center justify-center>
             <h1>Login</h1>
-            <v-card-subtitle v-if="formErrors">
-              {{ formErrors }}
-            </v-card-subtitle>
-            <v-card-subtitle v-if="response">
-              {{ response }}
-            </v-card-subtitle>
           </v-card-title>
           <v-card-text class="pt-4">
             <div>
@@ -157,18 +152,18 @@ Next, let's make pages (routes) for _login_, _logout_, and _register_.
                 <v-text-field
                   v-model="userData.email"
                   label="Enter your e-mail address"
-                  :rules="[rules.email]"
                   counter
                   required
                 ></v-text-field>
                 <v-text-field
                   v-model="userData.password"
                   label="Enter your password"
-                  :append-icon="form.showPassword ? 'mdi-eye-off' : 'mdi-eye'"
-                  :rules="[rules.password]"
-                  :type="form.showPassword ? 'text' : 'password'"
+                  :append-icon="
+                    userData.showPassword ? 'mdi-eye-off' : 'mdi-eye'
+                  "
+                  :type="userData.showPassword ? 'text' : 'password'"
                   required
-                  @click:append="form.showPassword = !form.showPassword"
+                  @click:append="userData.showPassword = !userData.showPassword"
                 ></v-text-field>
                 <v-layout justify-space-between>
                   <v-btn @click="logInUser(userData)">
@@ -182,25 +177,16 @@ Next, let's make pages (routes) for _login_, _logout_, and _register_.
         </v-card>
       </v-flex>
     </v-layout>
-
   </div>
 </template>
 
 <script>
 export default {
   data: () => ({
-    // loggedIn: false,
     userData: { email: '', password: '', showPassword: false },
-    response: '',
-    formErrors: '',
   }),
   methods: {
     async logInUser(userData) {
-      if (!this.$refs.form.validate()) {
-        this.formErrors = 'Please correct the errors below'
-        return
-      }
-      this.formErrors = ''
       try {
         await this.$auth.loginWith('local', {
           data: userData,
@@ -214,3 +200,127 @@ export default {
 }
 </script>
 ```
+
+In this page, we created a login form with `email` and `password` fields.
+There is a `data` object that stores all properties of the form so that
+we can perform validation on it, and send that validated data to the
+backend. On clicking the button labelled _Login_, an async function
+`logInUser()` is executed. This uses the Nuxtjs `auth` module to send a
+POST request containing the `userData` to `token/login/` which will then
+automatically perform the login and return the login token as
+`auth_token`. This `auth_token` is stored in the Vuex store for further use
+later. Furthermore, a new request is sent to `accounts/data/` which then
+returns all the data about the logged in user like `email`, `id`, `first_name`,
+etc. The _logout_ button already works. When you click on it, it calls an `auth`
+module function- `$auth.logout()`. This simply deletes the `auth_token` from
+memory and flushes out the `$auth.user` object.
+
+So _login_ and _logout_ functionalities are working! Yay!
+
+Let's get the _registration_ functionality working now. This will be fairly
+easy.
+
+```HTML
+<!-- pages/register.vue -->
+<template>
+  <div class="register-page">
+    <v-container>
+      <v-layout flex align-center justify-center>
+        <v-flex xs6 sm6 elevation-6>
+          <v-card>
+            <v-card-title flex align-center justify-center>
+              <h1>Register</h1>
+            </v-card-title>
+            <v-card-text class="pt-4">
+              <div>
+                <v-form ref="form">
+                  <v-text-field
+                    v-model="userData.email"
+                    label="Enter your e-mail address"
+                    counter
+                    required
+                  ></v-text-field>
+                  <v-text-field
+                    v-model="userData.password"
+                    label="Enter your password"
+                    required
+                    :append-icon="
+                      userData.showPassword ? 'mdi-eye' : 'mdi-eye-off'
+                    "
+                    :type="userData.showPassword ? 'text' : 'password'"
+                    @click:append="
+                      userData.showPassword = !userData.showPassword
+                    "
+                  ></v-text-field>
+                  <v-text-field
+                    v-model="userData.password2"
+                    label="Confirm password"
+                    :append-icon="
+                      userData.showPassword2 ? 'mdi-eye' : 'mdi-eye-off'
+                    "
+                    :type="userData.showPassword2 ? 'text' : 'password'"
+                    required
+                    @click:append="
+                      userData.showPassword2 = !userData.showPassword2
+                    "
+                  ></v-text-field>
+                  <v-layout justify-space-between>
+                    <v-btn @click="signUp(userData)">
+                      Register
+                    </v-btn>
+                    <a href="">Forgot Password</a>
+                  </v-layout>
+                </v-form>
+              </div>
+            </v-card-text>
+          </v-card>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </div>
+</template>
+
+<script>
+export default {
+  data: () => ({
+    userData: {
+      email: '',
+      password: '',
+      password2: '',
+      showPassword: false,
+      showPassword2: false,
+    },
+  }),
+  methods: {
+    signUp(registrationInfo) {
+      this.$axios
+        .$post('accounts/users/', registrationInfo)
+        .then((response) => {
+          console.log('Successful')
+        })
+        .catch((error) => {
+          console.log('errors:', error.response)
+        })
+      this.$auth.loginWith('local', {
+        data: registrationInfo,
+      })
+    },
+  },
+}
+</script>
+```
+
+As soon as the user enters their details in the form, and click the _Register_
+button, a function `signUp()` is fired. Using the `axios` module, a POST
+request is sent to `accounts/users`. Assuming the data is valid, the user is
+created in the database. Next, we use the `auth` module to again login using
+the same logic as we did previously in our login page `login.vue`. _Logout_
+functionality stays the same as before.
+
+# Conclusion
+
+So, now that you are with authentication what new feature do you plan to
+implement?
+
+I thank you all for taking the time to follow this tutorial and I hope I can
+help you again in future. See you!
