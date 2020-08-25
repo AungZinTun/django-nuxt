@@ -292,8 +292,8 @@ export default {
     },
   }),
   methods: {
-    signUp(registrationInfo) {
-      this.$axios
+    async signUp(registrationInfo) {
+      await this.$axios
         .$post('accounts/users/', registrationInfo)
         .then((response) => {
           console.log('Successful')
