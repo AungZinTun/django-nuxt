@@ -41,9 +41,7 @@
                     "
                   ></v-text-field>
                   <v-layout justify-space-between>
-                    <v-btn @click="signUp(userData)">
-                      Register
-                    </v-btn>
+                    <v-btn @click="signUp(userData)"> Register </v-btn>
                     <a href="">Forgot Password</a>
                   </v-layout>
                 </v-form>

@@ -26,9 +26,7 @@
                   @click:append="userData.showPassword = !userData.showPassword"
                 ></v-text-field>
                 <v-layout justify-space-between>
-                  <v-btn @click="logInUser(userData)">
-                    Login
-                  </v-btn>
+                  <v-btn @click="logInUser(userData)"> Login </v-btn>
                   <a href="?">Forgot Password</a>
                 </v-layout>
               </v-form>
